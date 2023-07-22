@@ -23,9 +23,35 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
     { label: "Africa", selected: false },
     { label: "Europe", selected: false },
   ]);
-  const previousSearchQuery = useRef(initialSearchQuery);
-  const previousCompetitionOptions = useRef(competitionOptions);
-  const previousRegionOptions = useRef(regionOptions);
+  const previousSearchQuery = useRef("");
+  const previousCompetitionOptions = useRef([]);
+  const previousRegionOptions = useRef([]);
+
+  const handleSearchQueryChange = (value: string) => {
+    setSearchQuery((previous) => {
+      previousSearchQuery.current = previous;
+      return value;
+    });
+  };
+
+  const handleCompetitionOptionsChange = (values: FilterOption[]) => {
+    setCompetitionOptions((previous) => {
+      console.log(previous);
+      previousCompetitionOptions.current = previous;
+      return values;
+    });
+  };
+
+  const arraysEqual = (a1: any, a2: any) => {
+    return JSON.stringify(a1) == JSON.stringify(a2);
+  };
+
+  const handleRegionOptionsChange = (values: FilterOption[]) => {
+    setRegionOptions((previous) => {
+      previousRegionOptions.current = previous;
+      return values;
+    });
+  };
 
   const filterOptionArrayToStringArray = (
     filterOptions: FilterOption[] | string[]
@@ -53,11 +79,11 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
     previousCompetitions = filterOptionArrayToStringArray(previousCompetitions);
     previousRegions = filterOptionArrayToStringArray(previousRegions);
 
-    // If the searchQuery, competitions or regions have changed, reset the offset and limit
+    // compare if the searchQuery, competitions or regions arrays are not equal to the previous ones and reset the offset and limit
     if (
       searchQuery !== previousSearchQuery ||
-      competitions !== previousCompetitions ||
-      regions !== previousRegions
+      !arraysEqual(competitions, previousCompetitions) ||
+      !arraysEqual(regions, previousRegions)
     ) {
       setOffset(0);
       setLimit(10);
@@ -72,8 +98,8 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
         country_names: regions,
       },
     });
-    const fixtures: Fixture[] = res.data;
-    const totalFixtures = fixtures.length;
+    const fixtures: Fixture[] = res.data.results;
+    const totalFixtures = res.data.count;
     const fixtureSets = getFixtureSets(fixtures);
     return {
       fixtureSets,
@@ -110,15 +136,15 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
     limit,
     setLimit,
     searchQuery,
-    setSearchQuery,
+    handleSearchQueryChange,
     isLoading,
     isError,
     data,
     error,
     competitionOptions,
-    setCompetitionOptions,
+    handleCompetitionOptionsChange,
     regionOptions,
-    setRegionOptions,
+    handleRegionOptionsChange,
   };
 };
 

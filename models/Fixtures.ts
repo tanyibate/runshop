@@ -4,6 +4,7 @@ export default class Fixtures {
   private limit: number;
   private offset: number;
   private searchQuery: string;
+  private totalFixtures: number;
 
   private competitions: string[];
   private country_names: string[];
@@ -21,6 +22,55 @@ export default class Fixtures {
     this.competitions = competitions;
     this.country_names = country_names;
   }
+
+  private generateGetFixturesByCategoryQueryObject() {
+    return {
+      AND: [
+        {
+          OR: [
+            {
+              home: {
+                contains: this.searchQuery,
+              },
+            },
+            {
+              away: {
+                contains: this.searchQuery,
+              },
+            },
+          ],
+        },
+        {
+          OR: [
+            ...this.competitions.map((competition) => ({
+              competition: competition,
+            })),
+            ...this.country_names.map((country_name) => ({
+              country_name: country_name,
+            })),
+          ],
+        },
+      ],
+    };
+  }
+
+  private generateGetFixturesBySearchQueryQueryObject() {
+    return {
+      OR: [
+        {
+          home: {
+            contains: this.searchQuery,
+          },
+        },
+        {
+          away: {
+            contains: this.searchQuery,
+          },
+        },
+      ],
+    };
+  }
+
   private async getAllFixtures() {
     return await prisma.fixture.findMany({
       take: this.limit,
@@ -30,20 +80,7 @@ export default class Fixtures {
 
   private async getFixturesBySearchQuery() {
     return await prisma.fixture.findMany({
-      where: {
-        OR: [
-          {
-            home: {
-              contains: this.searchQuery,
-            },
-          },
-          {
-            away: {
-              contains: this.searchQuery,
-            },
-          },
-        ],
-      },
+      where: this.generateGetFixturesBySearchQueryQueryObject(),
       take: this.limit,
       skip: this.offset,
     });
@@ -51,36 +88,21 @@ export default class Fixtures {
 
   private async getFixturesByCategory() {
     return await prisma.fixture.findMany({
-      where: {
-        AND: [
-          {
-            OR: [
-              {
-                home: {
-                  contains: this.searchQuery,
-                },
-              },
-              {
-                away: {
-                  contains: this.searchQuery,
-                },
-              },
-            ],
-          },
-          {
-            OR: [
-              ...this.competitions.map((competition) => ({
-                competition: competition,
-              })),
-              ...this.country_names.map((country_name) => ({
-                country_name: country_name,
-              })),
-            ],
-          },
-        ],
-      },
+      where: this.generateGetFixturesByCategoryQueryObject(),
       take: this.limit,
       skip: this.offset,
+    });
+  }
+
+  private async getFixturesCountByCategory() {
+    return await prisma.fixture.count({
+      where: this.generateGetFixturesByCategoryQueryObject(),
+    });
+  }
+
+  private async getFixturesCountBySearchQuery() {
+    return await prisma.fixture.count({
+      where: this.generateGetFixturesBySearchQueryQueryObject(),
     });
   }
 
@@ -89,5 +111,12 @@ export default class Fixtures {
       return await this.getFixturesByCategory();
     if (this.searchQuery) return await this.getFixturesBySearchQuery();
     return await this.getAllFixtures();
+  }
+
+  public async getFixturesCount() {
+    if (this.competitions.length > 0 || this.country_names.length > 0)
+      return await this.getFixturesCountByCategory();
+    if (this.searchQuery) return await this.getFixturesCountBySearchQuery();
+    return await prisma.fixture.count();
   }
 }

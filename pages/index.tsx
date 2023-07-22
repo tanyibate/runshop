@@ -13,41 +13,43 @@ export default function Fixtures() {
     isLoading,
     isError,
     competitionOptions,
-    setCompetitionOptions,
+    handleCompetitionOptionsChange,
     regionOptions,
-    setRegionOptions,
+    handleRegionOptionsChange,
+    limit,
+    offset,
   } = useFixturesApi();
 
   return (
     <Layout>
       <Header />
-      <main>
-        <div className="mx-auto max-w-7xl py-6 ">
-          <div className="flex min-w-full gap-x-2">
-            <div className="w-2/3">
+      <main className="w-full">
+        <div className="mx-auto max-w-7xl py-6 w-full">
+          <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0">
+            <div className="w-full sm:w-2/3">
               <Searchbar />
             </div>
-            <div className="w-1/3">
+            <div className="w-full sm:w-1/3">
               <Filter
                 filters={[
                   {
                     type: "checkbox",
                     label: "Competitions",
                     values: competitionOptions,
-                    setter: setCompetitionOptions,
+                    setter: handleCompetitionOptionsChange,
                   },
                   {
                     type: "checkbox",
                     label: "Regions",
                     values: regionOptions,
-                    setter: setRegionOptions,
+                    setter: handleRegionOptionsChange,
                   },
                 ]}
               />
             </div>
           </div>
 
-          <div className="my-4">
+          <div className="mt-4">
             {data && <FixturesTable fixtureSets={data.fixtureSets} />}
             {isError && (
               <div className="text-red-500">
@@ -56,7 +58,13 @@ export default function Fixtures() {
             )}
             {isLoading && <div className="text-blue-500">Loading...</div>}
           </div>
-          <Pagination />
+          {data && (
+            <Pagination
+              limit={limit}
+              total={data.totalFixtures}
+              offset={offset}
+            />
+          )}
         </div>
       </main>
     </Layout>
