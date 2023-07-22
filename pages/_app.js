@@ -1,5 +1,8 @@
 import "../styles/globals.css";
 import Navbar from "../components/navbar";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 export default function MyApp({ Component, pageProps }) {
   // Use the layout defined at the page level, if available
@@ -15,13 +18,13 @@ export default function MyApp({ Component, pageProps }) {
   const userNavigation = [{ name: "Sign out", href: "#" }];
 
   return getLayout(
-    <>
+    <QueryClientProvider client={queryClient}>
       <Navbar
         navigation={navigation}
         userNavigation={userNavigation}
         user={user}
       />
       <Component {...pageProps} />
-    </>
+    </QueryClientProvider>
   );
 }

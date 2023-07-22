@@ -80,6 +80,7 @@ model Odd {
   fixture_id        Int
   timestamp         DateTime
   market_parameters Float?
+  odds_type         Int
   price_names       String[]
   prices            Float[]
 }
