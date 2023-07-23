@@ -1,10 +1,10 @@
 import useFixturesApi from "@/hooks/useFixturesApi";
-import Header from "@/components/header";
+import Header from "@/components/header/Header";
 import Layout from "@/components/layout";
-import Searchbar from "@/components/searchbar";
-import Pagination from "@/components/pagination";
-import FixturesTable from "@/components/fixturesTable";
-import Filter from "@/components/filter";
+import Searchbar from "@/components/searchbar/Searchbar";
+import Pagination from "@/components/pagination/Pagination";
+import FixturesTable from "@/components/fixturesTable/FixturesTable";
+import Filter from "@/components/filter/Filter";
 
 export default function Fixtures() {
   const {
@@ -22,10 +22,10 @@ export default function Fixtures() {
 
   return (
     <Layout>
-      <Header />
-      <main className="w-full">
-        <div className="mx-auto max-w-7xl py-6 w-full">
-          <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0">
+      <Header pageName={"Fixtures"} />
+      <main className="w-full h-full">
+        <div className="mx-auto max-w-7xl pt-4 w-full h-full bg-white z-50">
+          <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0 mb-4">
             <div className="w-full sm:w-2/3">
               <Searchbar />
             </div>
@@ -49,8 +49,16 @@ export default function Fixtures() {
             </div>
           </div>
 
-          <div className="mt-4">
+          <div
+            className="w-full max-w-full overflow-hidden relative overflow-y-scroll"
+            style={{
+              height: "calc(100vh - 380px)",
+            }}
+          >
             {data && <FixturesTable fixtureSets={data.fixtureSets} />}
+            {data && data.fixtureSets.length === 0 && (
+              <div className="text-blue-500">No fixtures found</div>
+            )}
             {isError && (
               <div className="text-red-500">
                 An error has occurred: {error.message}

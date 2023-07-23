@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import fixtures from "../fixtures.json";
 import bookmakers from "../bookmakers.json";
 import odds from "../odds.json";
+import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 async function main() {
   for (const fixture of fixtures) {
@@ -48,6 +49,19 @@ async function main() {
       },
     });
   }
+
+  // Add an example user to the database
+  const saltRounds = 10;
+  const encryptedPassword = await bcrypt.hash("password", saltRounds);
+  await prisma.user.create({
+    data: {
+      email: "admin@runshop.com",
+      name: "J Smith",
+      password: encryptedPassword,
+      image:
+        "https://media.istockphoto.com/id/1034357476/photo/indoor-photo-of-handsome-european-guy-pictured-isolated-on-grey-background-standing-close-to.jpg?s=612x612&w=0&k=20&c=3F-nSSoTbe6IhXeCn-tZHCUTx-DT58YOs1-9vGv__es=",
+    },
+  });
 }
 main()
   .then(async () => {

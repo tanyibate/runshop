@@ -75,7 +75,7 @@ export default function Filter(props: { filters: FilterType[] }) {
       {dropdown && (
         <div
           id="dropdown"
-          className="z-10 p-3 bg-white rounded-lg shadow dark:bg-gray-700 absolute top-full mt-2 left-0 w-full"
+          className="z-50 p-3 bg-white rounded-lg shadow dark:bg-gray-700 absolute top-full mt-2 left-0 w-full"
         >
           <div
             id="accordion-collapse"

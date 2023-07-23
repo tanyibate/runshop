@@ -1,5 +1,5 @@
-import React from "react";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -15,21 +15,22 @@ export type NavigationItem = {
   current: boolean;
 };
 
-export type UserNavigationItem = {
-  name: string;
-  href: string;
-};
-
-export default function Navbar(props: {
-  userNavigation: UserNavigationItem[];
-  user: User;
-  navigation: NavigationItem[];
-}) {
+export default function Navbar(props: { navigation: NavigationItem[] }) {
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
 
-  const { userNavigation, user, navigation } = props;
+  const { navigation } = props;
+  const { data: session } = useSession();
+  const { user } = session || {
+    user: {
+      name: "",
+      email: "",
+      image:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    },
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800 fixed top-0 left-0 w-full z-50">
       {({ open }) => (
@@ -81,7 +82,7 @@ export default function Navbar(props: {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={user.imageUrl}
+                          src={user.image}
                           alt=""
                         />
                       </Menu.Button>
@@ -96,21 +97,26 @@ export default function Navbar(props: {
                       leaveTo="transform opacity-0 scale-95"
                     >
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                {item.name}
-                              </a>
-                            )}
-                          </Menu.Item>
-                        ))}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href={"#"}
+                              onClick={() => {
+                                if (session) {
+                                  signOut();
+                                } else {
+                                  signIn();
+                                }
+                              }}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
+                            >
+                              {session ? "Sign out" : "Sign in"}
+                            </a>
+                          )}
+                        </Menu.Item>
                       </Menu.Items>
                     </Transition>
                   </Menu>
@@ -154,7 +160,7 @@ export default function Navbar(props: {
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={user.imageUrl}
+                    src={user.image}
                     alt=""
                   />
                 </div>
@@ -175,16 +181,20 @@ export default function Navbar(props: {
                 </button>
               </div>
               <div className="mt-3 space-y-1 px-2">
-                {userNavigation.map((item) => (
-                  <Disclosure.Button
-                    key={item.name}
-                    as="a"
-                    href={item.href}
-                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                  >
-                    {item.name}
-                  </Disclosure.Button>
-                ))}
+                <Disclosure.Button
+                  as="a"
+                  href={"#"}
+                  onClick={() => {
+                    if (session) {
+                      signOut();
+                    } else {
+                      signIn();
+                    }
+                  }}
+                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                >
+                  {session ? "Sign out" : "Sign in"}
+                </Disclosure.Button>
               </div>
             </div>
           </Disclosure.Panel>

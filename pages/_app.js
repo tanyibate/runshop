@@ -1,10 +1,14 @@
 import "../styles/globals.css";
-import Navbar from "../components/navbar";
+import Navbar from "../components/navbar/Navbar";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SessionProvider } from "next-auth/react";
 
 const queryClient = new QueryClient();
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   // Use the layout defined at the page level, if available
   const user = {
     name: "Tom Cook",
@@ -18,13 +22,15 @@ export default function MyApp({ Component, pageProps }) {
   const userNavigation = [{ name: "Sign out", href: "#" }];
 
   return getLayout(
-    <QueryClientProvider client={queryClient}>
-      <Navbar
-        navigation={navigation}
-        userNavigation={userNavigation}
-        user={user}
-      />
-      <Component {...pageProps} />
-    </QueryClientProvider>
+    <SessionProvider session={session}>
+      <QueryClientProvider client={queryClient}>
+        <Navbar
+          navigation={navigation}
+          userNavigation={userNavigation}
+          user={user}
+        />
+        <Component {...pageProps} />
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }

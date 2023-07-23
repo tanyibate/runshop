@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { Fixture } from ".prisma/client";
 import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
-import { FilterOption } from "@/components/filter";
+import { FilterOption } from "@/components/filter/Filter";
 
 const useFixtureApi = (initialSearchQuery: string = "") => {
   const [offset, setOffset] = useState(0);
