@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "react-query";
 import { Fixture } from ".prisma/client";
 import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
 import { FilterOption } from "@/components/filter/Filter";
+import { lutimes } from "fs";
 
 const useFixtureApi = (initialSearchQuery: string = "") => {
   const [offset, setOffset] = useState(0);
@@ -23,34 +24,20 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
     { label: "Africa", selected: false },
     { label: "Europe", selected: false },
   ]);
-  const previousSearchQuery = useRef("");
-  const previousCompetitionOptions = useRef([]);
-  const previousRegionOptions = useRef([]);
 
   const handleSearchQueryChange = (value: string) => {
-    setSearchQuery((previous) => {
-      previousSearchQuery.current = previous;
-      return value;
-    });
+    setOffset(0);
+    setSearchQuery(value);
   };
 
   const handleCompetitionOptionsChange = (values: FilterOption[]) => {
-    setCompetitionOptions((previous) => {
-      console.log(previous);
-      previousCompetitionOptions.current = previous;
-      return values;
-    });
-  };
-
-  const arraysEqual = (a1: any, a2: any) => {
-    return JSON.stringify(a1) == JSON.stringify(a2);
+    setOffset(0);
+    setCompetitionOptions(values);
   };
 
   const handleRegionOptionsChange = (values: FilterOption[]) => {
-    setRegionOptions((previous) => {
-      previousRegionOptions.current = previous;
-      return values;
-    });
+    setOffset(0);
+    setRegionOptions(values);
   };
 
   const filterOptionArrayToStringArray = (
@@ -67,27 +54,12 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
     limit: number,
     offset: number,
     searchQuery: string,
-    previousSearchQuery: string,
     competitions: FilterOption[] | string[] = [],
-    previousCompetitions: FilterOption[],
-    regions: FilterOption[] | string[] = [],
-    previousRegions: FilterOption[] | string[]
+    regions: FilterOption[] | string[] = []
   ) => {
     // Turn the competitions array into an array of strings
     competitions = filterOptionArrayToStringArray(competitions);
     regions = filterOptionArrayToStringArray(regions);
-    previousCompetitions = filterOptionArrayToStringArray(previousCompetitions);
-    previousRegions = filterOptionArrayToStringArray(previousRegions);
-
-    // compare if the searchQuery, competitions or regions arrays are not equal to the previous ones and reset the offset and limit
-    if (
-      searchQuery !== previousSearchQuery ||
-      !arraysEqual(competitions, previousCompetitions) ||
-      !arraysEqual(regions, previousRegions)
-    ) {
-      setOffset(0);
-      setLimit(10);
-    }
 
     const res = await api.get("/fixtures", {
       params: {
@@ -108,25 +80,14 @@ const useFixtureApi = (initialSearchQuery: string = "") => {
   };
 
   const { isLoading, isError, data, error } = useQuery(
-    [
-      "fixtures",
-      limit,
-      offset,
-      searchQuery,
-      previousSearchQuery,
-      competitionOptions,
-      regionOptions,
-    ],
+    ["fixtures", limit, offset, searchQuery, competitionOptions, regionOptions],
     () =>
       fetchFixtures(
         limit,
         offset,
         searchQuery,
-        previousSearchQuery.current,
         competitionOptions,
-        previousCompetitionOptions.current,
-        regionOptions,
-        previousRegionOptions.current
+        regionOptions
       )
   );
 

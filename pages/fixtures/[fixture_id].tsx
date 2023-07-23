@@ -22,7 +22,8 @@ export default function Fixture({
     return (
       <Layout>
         <Header pageName={pageName} />
-        <main className="w-full">
+        <main className="w-full pt-4">
+          <h1 className="text-3xl font-bold">Odds</h1>
           <div className="mx-auto max-w-7xl py-6 w-full space-y-4">
             {oddsAreLoading && <div>Loading...</div>}
             {oddsApiHasError && <div>{oddsApiError}</div>}
@@ -35,6 +36,12 @@ export default function Fixture({
                   bookMakerOdds={bookmakerWithOdds}
                 />
               ))}
+            {bookmakersWithOdds && bookmakersWithOdds.length === 0 && (
+              <div>
+                No odds found for this game. Try filtering for a Europa
+                Conference League Game ;)
+              </div>
+            )}
           </div>
         </main>
       </Layout>

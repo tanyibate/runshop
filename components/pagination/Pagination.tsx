@@ -30,18 +30,20 @@ export default function Pagination(props: {
   setOffset: (offset: number) => void;
 }) {
   const { offset, limit, total, setOffset } = props;
-  const previousButtonIsActive = offset > limit;
+  const previousButtonIsActive = offset >= limit;
   const nextButtonIsActive = offset + limit < total;
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white py-3 ">
       <div className="flex flex-1 justify-between sm:hidden">
         <PreviousButton
           isActive={previousButtonIsActive}
-          onClick={() => console.log("click")}
+          onClick={() => setOffset(offset - limit)}
         />
         <NextButton
           isActive={nextButtonIsActive}
-          onClick={() => console.log("click")}
+          onClick={() => {
+            setOffset(offset + limit);
+          }}
         />
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
@@ -51,7 +53,9 @@ export default function Pagination(props: {
             <span className="font-medium">{total ? offset + 1 : 0} </span> to
             <span className="font-medium">
               {" "}
-              {total >= limit ? limit + offset : total}
+              {total >= limit && limit + offset < total
+                ? limit + offset
+                : total}
             </span>{" "}
             of
             <span className="font-medium"> {total}</span> results
@@ -65,7 +69,9 @@ export default function Pagination(props: {
             />
             <NextButton
               isActive={nextButtonIsActive}
-              onClick={() => setOffset(offset + limit)}
+              onClick={() => {
+                setOffset(offset + limit);
+              }}
             />
           </div>
         </div>

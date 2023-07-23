@@ -2,7 +2,7 @@ import React from "react";
 import { Odd } from "@prisma/client";
 
 const OddDisplay = ({ children }) => (
-  <div className="rounded bg-blue-600 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1">
+  <div className="rounded bg-blue-700 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1 shadow">
     {children}
   </div>
 );
@@ -20,7 +20,7 @@ export default function OddsCard(props: {
   const type3Odd = odds.find((odd) => odd.odds_type === 3);
   const arrayOfType1Odds = odds.filter((odd) => odd.odds_type === 1);
   return (
-    <div className="w-full rounded-lg border p-6 bg-gray-800 ">
+    <div className="w-full rounded-lg border p-6 bg-gray-50 shadow">
       <div className="text-4xl">{name}</div>
       <a
         href="#"
@@ -42,8 +42,11 @@ export default function OddsCard(props: {
         <div className="w-full">
           <div className="text-3xl mt-4 ">Total Goals</div>
           <div className="space-y-2">
-            {arrayOfType1Odds.map((odd) => (
-              <div className="flex items-center gap-x-4">
+            {arrayOfType1Odds.map((odd, index) => (
+              <div
+                className="flex items-center gap-x-4"
+                key={home + away + "OverUnder" + index}
+              >
                 <OddDisplay>
                   {"Over " + odd.market_parameters + " " + odd.prices[0]}
                 </OddDisplay>

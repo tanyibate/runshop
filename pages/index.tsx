@@ -18,6 +18,8 @@ export default function Fixtures() {
     handleRegionOptionsChange,
     limit,
     offset,
+    setOffset,
+    setLimit,
   } = useFixturesApi();
 
   return (
@@ -27,7 +29,7 @@ export default function Fixtures() {
         <div className="mx-auto max-w-7xl pt-4 w-full h-full bg-white z-50">
           <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0 mb-4">
             <div className="w-full sm:w-2/3">
-              <Searchbar />
+              <Searchbar placeholder="Search by Fixture..." />
             </div>
             <div className="w-full sm:w-1/3">
               <Filter
@@ -71,6 +73,7 @@ export default function Fixtures() {
               limit={limit}
               total={data.totalFixtures}
               offset={offset}
+              setOffset={setOffset}
             />
           )}
         </div>
