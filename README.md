@@ -46,4 +46,4 @@ npx prisma db seed
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To access protected routes sign in with the credentials admin@runshop.com and the password being just password for simplicity. You can also sign in using your Google Account but this may be limited due google credentials being a setup for an unpublished project. If google sign in does not work you may have to generate your own client id and client secret.
