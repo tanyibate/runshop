@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Odd } from "@prisma/client";
 import dateToLocaleString from "@/utils/dateToLocaleString";
+import { BookmakerWithOdds } from "@/hooks/useOddsApi";
 
 const OddDisplay = ({ children, timestamp }) => {
   const [hover, setHover] = useState(false);
   const formattedDate = dateToLocaleString(timestamp, true);
   return (
     <button
-      className="rounded bg-blue-700 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1 shadow hover:bg-blue-800 cursor-pointer relative z-10"
+      className="rounded bg-blue-700 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1 shadow hover:bg-blue-800 cursor-pointer relative z-0"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onMouseDown={() => setHover(true)}
@@ -30,21 +31,20 @@ const OddDisplay = ({ children, timestamp }) => {
 export default function OddsCard(props: {
   home: string;
   away: string;
-  bookMakerOdds: {
-    name: string;
-    odds: Odd[];
-  };
+  bookMakerOdds: BookmakerWithOdds;
+  triggerModal: (bookmaker_id: number) => void;
 }) {
-  const { home, away } = props;
-  const { name, odds } = props.bookMakerOdds;
+  const { home, away, triggerModal } = props;
+  const { name, odds, bookmaker_id } = props.bookMakerOdds;
   const type3Odd = odds.find((odd) => odd.odds_type === 3);
   const arrayOfType1Odds = odds.filter((odd) => odd.odds_type === 1);
   return (
-    <div className="w-full rounded-lg border p-6 bg-gray-50 shadow">
+    <div className="w-full rounded-lg border p-6 bg-gray-50 shadow z-20">
       <div className="text-2xl sm:text-4xl font-semibold">{name}</div>
       <a
         href="#"
         className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+        onClick={() => triggerModal(bookmaker_id)}
       >
         View Historical Odds?
       </a>

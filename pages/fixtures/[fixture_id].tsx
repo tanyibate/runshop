@@ -1,7 +1,6 @@
 import Header from "@/components/header/Header";
 import Layout from "@/components/layout";
 import React from "react";
-import { Odd } from "@prisma/client";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useSession } from "next-auth/react";
 import prisma from "@/utils/prisma";
@@ -10,6 +9,7 @@ import useOddsApi from "@/hooks/useOddsApi";
 import OddsCard from "@/components/oddsCard/OddsCard";
 import Searchbar from "@/components/searchbar/Searchbar";
 import Filter from "@/components/filter/Filter";
+import GraphModal from "@/components/modal/GraphModal";
 
 export default function Fixture({
   home,
@@ -23,36 +23,40 @@ export default function Fixture({
     oddsAreLoading,
     oddsApiHasError,
     bookmakersWithOdds,
-    searchQuery,
     setSearchQuery,
     timestampFilterType,
   } = useOddsApi(fixture_id);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [bookmaker_id, setBookmakerId] = React.useState<number>(null);
   if (session) {
     return (
       <Layout>
         <Header pageName={pageName} />
-        <main className="w-full pt-4 flex flex-col">
-          <h1 className="text-xl sm:text-3xl font-bold">Odds</h1>
-          <div className="text-sm sm:text-base mb-1">
-            Click and hold or hover the odds the view the times they were
-            published!
+        <main className="w-full relative">
+          <div className="w-full bg-white h-44 sm:h-36 flex-col flex justify-center">
+            <h1 className="text-xl sm:text-3xl font-bold">Odds</h1>
+            <div className="text-sm sm:text-base mb-1">
+              Hover or press the odds to view the times they were published!
+            </div>
+            <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0">
+              <div className="w-full sm:w-2/3">
+                <Searchbar
+                  placeholder="Search bookmaker..."
+                  changeHandler={(e) =>
+                    setSearchQuery(e.target.value.toLowerCase())
+                  }
+                />
+              </div>
+              <div className="w-full sm:w-1/3">
+                <Filter
+                  filters={[timestampFilterType]}
+                  title="Filter by category"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0 mb-2 sticky top-12">
-            <div className="w-full sm:w-2/3">
-              <Searchbar
-                placeholder="Search bookmaker..."
-                changeHandler={(e) =>
-                  setSearchQuery(e.target.value.toLowerCase())
-                }
-              />
-            </div>
-            <div className="w-full sm:w-1/3">
-              <Filter filters={[timestampFilterType]} />
-            </div>
-          </div>
-
-          <div className="py-2 w-full space-y-4 flex-1 overflow-scroll">
+          <div className="pt-2 w-full space-y-4 max-h-[calc(100vh-320px)] sm:max-h-[calc(100vh-288px)] overflow-y-scroll">
             {oddsAreLoading && <div>Loading...</div>}
             {oddsApiHasError && <div>{oddsApiError}</div>}
             {bookmakersWithOdds &&
@@ -62,6 +66,10 @@ export default function Fixture({
                   home={home}
                   away={away}
                   bookMakerOdds={bookmakerWithOdds}
+                  triggerModal={(bookmaker_id) => {
+                    setBookmakerId(bookmaker_id);
+                    setModalOpen(true);
+                  }}
                 />
               ))}
             {bookmakersWithOdds && bookmakersWithOdds.length === 0 && (
@@ -71,6 +79,14 @@ export default function Fixture({
             )}
           </div>
         </main>
+        {modalOpen && (
+          <GraphModal
+            active={modalOpen}
+            deactivate={() => setModalOpen(false)}
+            bookmaker_id={bookmaker_id}
+            fixture_id={fixture_id}
+          />
+        )}
       </Layout>
     );
   }

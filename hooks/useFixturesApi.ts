@@ -4,6 +4,7 @@ import { Fixture } from ".prisma/client";
 import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
 import { FilterOption } from "@/components/filter/Filter";
+import debounce from "lodash.debounce";
 
 const useFixtureApi = (
   initialSearchQuery: string = "",
@@ -27,10 +28,10 @@ const useFixtureApi = (
     { label: "Europe", selected: false },
   ]);
 
-  const handleSearchQueryChange = (value: string) => {
+  const handleSearchQueryChange = debounce((value: string) => {
     setOffset(0);
     setSearchQuery(value);
-  };
+  }, 500);
 
   const handleCompetitionOptionsChange = (values: FilterOption[]) => {
     setOffset(0);

@@ -57,12 +57,13 @@ export default function Fixtures() {
                     setter: handleRegionOptionsChange,
                   },
                 ]}
+                title="Filter by category"
               />
             </div>
           </div>
 
           <div
-            className="w-full max-w-full overflow-hidden relative overflow-y-scroll"
+            className="w-full max-w-full overflow-hidden relative overflow-y-scroll sm:overflow-y-auto"
             style={{
               height: "calc(100vh - 380px)",
             }}

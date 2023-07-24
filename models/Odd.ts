@@ -10,7 +10,7 @@ export default class Odd {
   constructor(
     fixture_id: number,
     bookmaker_id: number,
-    timestamp: string,
+    timestamp: string = new Date().toISOString(),
     sortOrder: "asc" | "desc" = "desc",
     searchQuery: string = ""
   ) {
@@ -33,7 +33,7 @@ export default class Odd {
       throw new Error("Invalid sortOrder");
 
     return await prisma.$queryRawUnsafe(`
-    SELECT oddstable.name,json_agg(to_jsonb(oddstable.*) - 'bookmaker_id') as odds 
+    SELECT oddstable.name,json_agg(to_jsonb(oddstable.*) - 'bookmaker_id') as odds, oddstable.bookmaker_id 
     FROM (SELECT DISTINCT ON (od.bookmaker_id, od.market_parameters ) bm.name, od.*
             FROM "Odd" od
             LEFT JOIN "Bookmaker" bm ON od.bookmaker_id=bm.bookmaker_id
@@ -44,7 +44,7 @@ export default class Odd {
                 AND LOWER(bm.name) LIKE LOWER('%${this.searchQuery}%')
             ORDER BY  od.bookmaker_id ASC, od.market_parameters ASC, od.timestamp ${this.sortOrder}
         ) oddstable
-    GROUP BY oddstable.name
+    GROUP BY oddstable.name, oddstable.bookmaker_id
 `);
   }
 
@@ -53,6 +53,9 @@ export default class Odd {
       where: {
         fixture_id: this.fixture_id,
         bookmaker_id: this.bookmaker_id,
+        prices: {
+          isEmpty: false,
+        },
       },
       orderBy: {
         timestamp: this.sortOrder,

@@ -1,23 +1,28 @@
 import { useQuery } from "react-query";
-import { Fixture, Odd } from ".prisma/client";
+import { Odd } from ".prisma/client";
 import api from "../utils/api";
 import { useState } from "react";
 import { FilterType } from "@/components/filter/Filter";
+import debounce from "lodash.debounce";
 
 export type BookmakerWithOdds = {
   name: string;
   odds: Odd[];
+  bookmaker_id: number;
 };
 
 const useOddsApi = (fixture_id: number) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [timestamp, setTimestamp] = useState(new Date().toISOString());
-  console.log(timestamp);
+  const debouncedUpdateTimestamp = debounce(
+    (value) => setTimestamp(value),
+    500
+  );
   const timestampFilterType: FilterType = {
     label: "Odds at time of",
     type: "datetime",
     value: timestamp,
-    setter: (value: string) => setTimestamp(value),
+    setter: debouncedUpdateTimestamp,
   };
 
   const {

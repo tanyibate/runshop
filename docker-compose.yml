@@ -1,0 +1,22 @@
+version: "1"
+
+services:
+  postgres:
+    container_name: "test-postgres"
+    image: "postgres:latest"
+    restart: always
+    ports:
+      - "15432:5432"
+    networks:
+      - app-tier
+    volumes:
+      - "pgdata:/var/lib/postgresql/data/"
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+volumes:
+  pgdata: {}
+
+networks:
+  app-tier:
+    driver: bridge
