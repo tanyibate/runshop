@@ -1,7 +1,7 @@
 import { Odd } from ".prisma/client";
 import { OverUnderChartData, WinLossDrawChartData } from "./types";
 
-export const onSuccess = (
+const generateGraphData = (
   data: Odd[],
   setChartData: {
     (value: {
@@ -66,6 +66,23 @@ export const onSuccess = (
     });
   });
 
+  // Now sort the data by timestamp ascending
+  overUnder0Point5Data.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  });
+
+  overUnder1Point5Data.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  });
+
+  overUnder2Point5Data.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  });
+
+  winLossDrawData.sort((a, b) => {
+    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+  });
+
   setChartData({
     overUnder0Point5Data,
     overUnder1Point5Data,
@@ -73,3 +90,5 @@ export const onSuccess = (
     winLossDrawData,
   });
 };
+
+export default generateGraphData;

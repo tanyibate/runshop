@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { Odd } from ".prisma/client";
 import api from "../utils/api";
-import { onSuccess } from "../utils/onSuccess";
+import generateGraphData from "@/utils/generateGraphData";
 import { OverUnderChartData, WinLossDrawChartData } from "@/utils/types";
 
 const useBookmakerApi = (
@@ -14,7 +14,7 @@ const useBookmakerApi = (
     winLossDrawData: WinLossDrawChartData[];
   }) => void
 ) => {
-  const { data, isLoading, isError, error } = useQuery<Odd[]>(
+  const { isLoading, isError, error } = useQuery<Odd[]>(
     ["odds", fixture_id, bookmaker_id],
     () =>
       api
@@ -26,7 +26,7 @@ const useBookmakerApi = (
         .then((res) => res.data),
     {
       onSuccess: (data) => {
-        onSuccess(data, setChartData);
+        generateGraphData(data, setChartData);
       },
     }
   );

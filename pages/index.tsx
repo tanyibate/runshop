@@ -74,7 +74,10 @@ export default function Fixtures() {
             )}
             {isError && (
               <div className="text-red-500">
-                An error has occurred: {error.message}
+                An error has occurred:{" "}
+                {error instanceof Error
+                  ? error.message
+                  : "Please try again later"}
               </div>
             )}
             {isLoading && <div className="text-blue-500">Loading...</div>}

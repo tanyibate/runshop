@@ -58,7 +58,11 @@ export default function Fixture({
 
           <div className="pt-2 w-full space-y-4 max-h-[calc(100vh-320px)] sm:max-h-[calc(100vh-288px)] overflow-y-scroll">
             {oddsAreLoading && <div>Loading...</div>}
-            {oddsApiHasError && <div>{oddsApiError}</div>}
+            {oddsApiHasError && (
+              <div className="text-red-500">
+                {oddsApiError instanceof Error && oddsApiError.message}
+              </div>
+            )}
             {bookmakersWithOdds &&
               bookmakersWithOdds.map((bookmakerWithOdds) => (
                 <OddsCard
@@ -94,15 +98,18 @@ export default function Fixture({
   return (
     <Layout>
       <Header pageName={pageName} />
-      <main className="w-full h-full">
-        <div className="mx-auto max-w-7xl py-6 w-full flex-col flex justify-center items-center h-full">
+      <main className="w-full absolute top-1/2 left-1/2 mx-auto -translate-x-1/2 -translate-y-1/2 px-2">
+        <div className="mx-auto max-w-7xl py-6 w-full flex-col flex justify-center items-center space-y-2 text-gray-600">
           <div className="text-3xl">Forbidden</div>
-          <div className="text-xl">
+          <div className="sm:text-xl text-center">
             You will not be able to view the odds until you sign in
           </div>
-          <a className="underline text-2xl" href="#" onClick={() => signIn()}>
+          <button
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg  px-8 py-4 mr-2 mb-2 focus:outline-none text-xl"
+            onClick={() => signIn()}
+          >
             Sign In
-          </a>
+          </button>
         </div>
       </main>
     </Layout>

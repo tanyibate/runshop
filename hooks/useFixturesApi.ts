@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { Fixture } from ".prisma/client";
 import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
 import { FilterOption } from "@/components/filter/Filter";
 import debounce from "lodash.debounce";
+import { FixtureSet } from "@/components/fixturesTable/FixturesTable";
 
 const useFixtureApi = (
   initialSearchQuery: string = "",

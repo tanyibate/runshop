@@ -43,7 +43,7 @@ export default function OddsCard(props: {
       <div className="text-2xl sm:text-4xl font-semibold">{name}</div>
       <a
         href="#"
-        className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+        className="underline text-blue-600 hover:text-blue-800"
         onClick={() => triggerModal(bookmaker_id)}
       >
         View Historical Odds?

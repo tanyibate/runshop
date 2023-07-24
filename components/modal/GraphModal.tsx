@@ -80,7 +80,11 @@ export default function Modal(props: {
             )}
             {isError && (
               <div className="flex items-center justify-center">
-                <div className="text-red-500">{error}</div>
+                <div className="text-red-500">
+                  {error instanceof Error
+                    ? error.message
+                    : "An error has occurred please try again later"}
+                </div>
               </div>
             )}
             {
