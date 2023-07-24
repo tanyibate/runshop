@@ -1,5 +1,5 @@
 import { Fixture } from ".prisma/client";
-import { FixtureSet } from "@/components/fixturesTable/FixturesTable";
+import { FixtureSet } from "@/utils/types";
 import dateToLocaleString from "./dateToLocaleString";
 
 // Function to turn an array of fixtures into an array of FixtureSets

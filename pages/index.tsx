@@ -1,3 +1,6 @@
+import { useMediaQuery } from "react-responsive";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import safeJsonStringify from "safe-json-stringify";
 import useFixturesApi from "@/hooks/useFixturesApi";
 import Header from "@/components/header/Header";
 import Layout from "@/components/layout";
@@ -5,9 +8,14 @@ import Searchbar from "@/components/searchbar/Searchbar";
 import Pagination from "@/components/pagination/Pagination";
 import FixturesTable from "@/components/fixturesTable/FixturesTable";
 import Filter from "@/components/filter/Filter";
-import { useMediaQuery } from "react-responsive";
+import FixturesClass from "@/models/Fixtures";
+import { FixtureSetsWithCount } from "@/utils/types";
+import { get } from "http";
+import getFixtureSets from "@/utils/getFixtureSets";
 
-export default function Fixtures() {
+export default function Fixtures({
+  initialData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const isShortScreen = useMediaQuery({
     query: "(max-height: 1024px)",
   });
@@ -25,7 +33,7 @@ export default function Fixtures() {
     offset,
     setOffset,
     setLimit,
-  } = useFixturesApi(undefined, isShortScreen ? 5 : 10);
+  } = useFixturesApi(undefined, isShortScreen ? 5 : 10, initialData);
 
   return (
     <Layout>
@@ -68,7 +76,9 @@ export default function Fixtures() {
               height: "calc(100vh - 380px)",
             }}
           >
-            {data && <FixturesTable fixtureSets={data.fixtureSets} />}
+            {data && data.fixtureSets.length > 0 && (
+              <FixturesTable fixtureSets={data.fixtureSets} />
+            )}
             {data && data.fixtureSets.length === 0 && (
               <div className="text-blue-500">No fixtures found</div>
             )}
@@ -95,3 +105,25 @@ export default function Fixtures() {
     </Layout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  initialData: FixtureSetsWithCount;
+}> = async () => {
+  let initialData: FixtureSetsWithCount = {
+    fixtureSets: [],
+    totalFixtures: 0,
+  };
+  const fixtures = new FixturesClass(10, 0);
+  const allFixtures = await fixtures.getFixtures();
+  const fixtureCount = await fixtures.getFixturesCount();
+  initialData = {
+    fixtureSets: getFixtureSets(allFixtures),
+    totalFixtures: fixtureCount,
+  };
+  initialData = JSON.parse(safeJsonStringify(initialData));
+  return {
+    props: {
+      initialData,
+    },
+  };
+};

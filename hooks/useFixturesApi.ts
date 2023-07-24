@@ -5,11 +5,12 @@ import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
 import { FilterOption } from "@/components/filter/Filter";
 import debounce from "lodash.debounce";
-import { FixtureSet } from "@/components/fixturesTable/FixturesTable";
+import { FixtureSetsWithCount } from "@/utils/types";
 
 const useFixtureApi = (
   initialSearchQuery: string = "",
-  initialLimit: number = 10
+  initialLimit: number = 10,
+  initialData: FixtureSetsWithCount = { fixtureSets: [], totalFixtures: 0 }
 ) => {
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(initialLimit);
@@ -83,7 +84,7 @@ const useFixtureApi = (
     };
   };
 
-  const { isLoading, isError, data, error } = useQuery(
+  const { isLoading, isError, data, error } = useQuery<FixtureSetsWithCount>(
     ["fixtures", limit, offset, searchQuery, competitionOptions, regionOptions],
     () =>
       fetchFixtures(
@@ -92,7 +93,10 @@ const useFixtureApi = (
         searchQuery,
         competitionOptions,
         regionOptions
-      )
+      ),
+    {
+      initialData: initialData,
+    }
   );
 
   return {

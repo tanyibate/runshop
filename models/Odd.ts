@@ -1,3 +1,4 @@
+import { BookmakerWithOdds } from "@/utils/types";
 import prisma from "@/utils/prisma";
 
 export default class Odd {
@@ -9,7 +10,7 @@ export default class Odd {
 
   constructor(
     fixture_id: number,
-    bookmaker_id: number,
+    bookmaker_id: number | undefined = undefined,
     timestamp: string = new Date().toISOString(),
     sortOrder: "asc" | "desc" = "desc",
     searchQuery: string = ""
@@ -21,7 +22,7 @@ export default class Odd {
     this.searchQuery = searchQuery;
   }
 
-  public async getAllOddsByTimestamp() {
+  public async getAllOddsByTimestamp(): Promise<BookmakerWithOdds[]> {
     let date = new Date();
     if (this.timestamp) date = new Date(this.timestamp);
     const dateString = `'${date.toISOString()}'`;

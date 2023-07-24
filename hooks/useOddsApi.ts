@@ -4,14 +4,9 @@ import api from "../utils/api";
 import { useState } from "react";
 import { FilterType } from "@/components/filter/Filter";
 import debounce from "lodash.debounce";
+import { BookmakerWithOdds } from "@/utils/types";
 
-export type BookmakerWithOdds = {
-  name: string;
-  odds: Odd[];
-  bookmaker_id: number;
-};
-
-const useOddsApi = (fixture_id: number) => {
+const useOddsApi = (fixture_id: number, initialData: BookmakerWithOdds[]) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [timestamp, setTimestamp] = useState(new Date().toISOString());
   const debouncedUpdateTimestamp = debounce(
@@ -41,7 +36,10 @@ const useOddsApi = (fixture_id: number) => {
             timestamp: timestamp,
           },
         })
-        .then((res) => res.data)
+        .then((res) => res.data),
+    {
+      initialData: initialData,
+    }
   );
 
   return {

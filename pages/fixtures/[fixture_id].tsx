@@ -2,33 +2,38 @@ import Header from "@/components/header/Header";
 import Layout from "@/components/layout";
 import React from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 import prisma from "@/utils/prisma";
-import { signIn } from "next-auth/react";
 import useOddsApi from "@/hooks/useOddsApi";
 import OddsCard from "@/components/oddsCard/OddsCard";
 import Searchbar from "@/components/searchbar/Searchbar";
 import Filter from "@/components/filter/Filter";
 import GraphModal from "@/components/modal/GraphModal";
+import Odd from "@/models/Odd";
+import { BookmakerWithOdds } from "@/utils/types";
 
 export default function Fixture({
   home,
   away,
   fixture_id,
+  initialData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: session } = useSession();
   const pageName = `${home} vs ${away}`;
-  const {
-    oddsApiError,
-    oddsAreLoading,
-    oddsApiHasError,
-    bookmakersWithOdds,
-    setSearchQuery,
-    timestampFilterType,
-  } = useOddsApi(fixture_id);
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const [bookmaker_id, setBookmakerId] = React.useState<number>(null);
+
   if (session) {
+    const {
+      oddsApiError,
+      oddsAreLoading,
+      oddsApiHasError,
+      bookmakersWithOdds,
+      setSearchQuery,
+      timestampFilterType,
+    } = useOddsApi(fixture_id, initialData);
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const [bookmaker_id, setBookmakerId] = React.useState<number>(null);
     return (
       <Layout>
         <Header pageName={pageName} />
@@ -120,20 +125,31 @@ export const getServerSideProps: GetServerSideProps<{
   home: string;
   away: string;
   fixture_id: number;
+  initialData: BookmakerWithOdds[];
+  session: any;
 }> = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  let bookmakersWithOdds: BookmakerWithOdds[] = [];
+  const { fixture_id } = context.params;
   const fixture = await prisma.fixture.findUnique({
     where: {
-      fixture_id: Number(context.params.fixture_id),
+      fixture_id: Number(fixture_id),
     },
   });
   const home = fixture.home;
   const away = fixture.away;
+  if (session) {
+    const odds = new Odd(Number(fixture_id));
+    bookmakersWithOdds = await odds.getAllOddsByTimestamp();
+  }
 
   return {
     props: {
       home,
       away,
       fixture_id: Number(context.params.fixture_id),
+      initialData: bookmakersWithOdds,
+      session,
     },
   };
 };

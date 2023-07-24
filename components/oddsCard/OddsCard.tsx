@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Odd } from "@prisma/client";
 import dateToLocaleString from "@/utils/dateToLocaleString";
-import { BookmakerWithOdds } from "@/hooks/useOddsApi";
+import { BookmakerWithOdds } from "@/utils/types";
 
 const OddDisplay = ({ children, timestamp }) => {
   const [hover, setHover] = useState(false);

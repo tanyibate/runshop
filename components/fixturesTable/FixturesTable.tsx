@@ -1,12 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { Fixture } from "@prisma/client";
-
-export type FixtureSet = {
-  date: string;
-  fixtures: Fixture[];
-  millis: number;
-};
+import { FixtureSet } from "@/utils/types";
 
 export default function FixturesTable(props: { fixtureSets: FixtureSet[] }) {
   const router = useRouter();
