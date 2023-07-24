@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { Odd } from "@prisma/client";
+import dateToLocaleString from "@/utils/dateToLocaleString";
 
-const OddDisplay = ({ children }) => (
-  <div className="rounded bg-blue-700 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1 shadow">
-    {children}
-  </div>
-);
+const OddDisplay = ({ children, timestamp }) => {
+  const [hover, setHover] = useState(false);
+  const formattedDate = dateToLocaleString(timestamp, true);
+  return (
+    <button
+      className="rounded bg-blue-700 text-white  text-sm sm:text-xl text-center h-12 px-4 sm:h-16 font-semibold flex items-center justify-center w-full sm:flex-1 shadow hover:bg-blue-800 cursor-pointer relative z-10"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onMouseDown={() => setHover(true)}
+      onMouseUp={() => setHover(false)}
+      type="button"
+    >
+      {children}
+      {
+        /** Tooltip showing the time of the odd */
+        hover && (
+          <div className="absolute top-0 left-0 bg-gray-900 text-white text-xs sm:text-sm p-1 rounded">
+            As of {formattedDate}
+          </div>
+        )
+      }
+    </button>
+  );
+};
 
 export default function OddsCard(props: {
   home: string;
@@ -21,7 +41,7 @@ export default function OddsCard(props: {
   const arrayOfType1Odds = odds.filter((odd) => odd.odds_type === 1);
   return (
     <div className="w-full rounded-lg border p-6 bg-gray-50 shadow">
-      <div className="text-4xl">{name}</div>
+      <div className="text-2xl sm:text-4xl font-semibold">{name}</div>
       <a
         href="#"
         className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
@@ -30,28 +50,37 @@ export default function OddsCard(props: {
       </a>
       {type3Odd && (
         <div className="w-full  pb-2">
-          <div className="text-3xl mt-4">Full Time</div>
+          <div className="text-xl sm:text-2xl mt-2 sm:mt-4">Full Time</div>
           <div className="flex  flex-col sm:gap-x-4 sm:flex-row gap-y-2 sm:gap-y-0">
-            <OddDisplay>{home + " " + type3Odd.prices[0]}</OddDisplay>
-            <OddDisplay>{"Draw " + type3Odd.prices[1]}</OddDisplay>
-            <OddDisplay>{away + " " + type3Odd.prices[2]}</OddDisplay>
+            <OddDisplay timestamp={type3Odd.timestamp}>
+              {home}&nbsp;&nbsp;<strong>{type3Odd.prices[0]}</strong>
+            </OddDisplay>
+            <OddDisplay timestamp={type3Odd.timestamp}>
+              Draw<strong>&nbsp;&nbsp;{type3Odd.prices[1]}</strong>
+            </OddDisplay>
+            <OddDisplay timestamp={type3Odd.timestamp}>
+              <span>{away}</span>
+              &nbsp;&nbsp;<strong>{type3Odd.prices[2]}</strong>
+            </OddDisplay>
           </div>
         </div>
       )}
       {arrayOfType1Odds.length > 0 && (
         <div className="w-full">
-          <div className="text-3xl mt-4 ">Total Goals</div>
+          <div className="text-2xl mt-2 sm:mt-4">Total Goals</div>
           <div className="space-y-2">
             {arrayOfType1Odds.map((odd, index) => (
               <div
                 className="flex items-center gap-x-4"
                 key={home + away + "OverUnder" + index}
               >
-                <OddDisplay>
-                  {"Over " + odd.market_parameters + " " + odd.prices[0]}
+                <OddDisplay timestamp={odd.timestamp}>
+                  {"Over " + odd.market_parameters}&nbsp;&nbsp;
+                  <strong>{odd.prices[0]}</strong>
                 </OddDisplay>
-                <OddDisplay>
-                  {"Under " + odd.market_parameters + " " + odd.prices[1]}
+                <OddDisplay timestamp={odd.timestamp}>
+                  {"Under " + odd.market_parameters}
+                  &nbsp;&nbsp;<strong>{odd.prices[1]}</strong>
                 </OddDisplay>
               </div>
             ))}

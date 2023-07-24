@@ -31,11 +31,13 @@ export default class Fixtures {
             {
               home: {
                 contains: this.searchQuery,
+                mode: "insensitive",
               },
             },
             {
               away: {
                 contains: this.searchQuery,
+                mode: "insensitive",
               },
             },
           ],
@@ -60,11 +62,13 @@ export default class Fixtures {
         {
           home: {
             contains: this.searchQuery,
+            mode: "insensitive",
           },
         },
         {
           away: {
             contains: this.searchQuery,
+            mode: "insensitive",
           },
         },
       ],

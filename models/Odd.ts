@@ -5,17 +5,20 @@ export default class Odd {
   private bookmaker_id: number | undefined;
   private timestamp: string | undefined;
   private sortOrder: "asc" | "desc" = "desc";
+  private searchQuery: string = "";
 
   constructor(
     fixture_id: number,
     bookmaker_id: number,
     timestamp: string,
-    sortOrder: "asc" | "desc" = "desc"
+    sortOrder: "asc" | "desc" = "desc",
+    searchQuery: string = ""
   ) {
     this.fixture_id = fixture_id;
     this.bookmaker_id = bookmaker_id;
     this.timestamp = timestamp;
     this.sortOrder = sortOrder;
+    this.searchQuery = searchQuery;
   }
 
   public async getAllOddsByTimestamp() {
@@ -38,6 +41,7 @@ export default class Odd {
                 od.fixture_id = ${this.fixture_id} 
                 AND od.prices != '{}' 
                 AND od.timestamp <= ${dateString}
+                AND LOWER(bm.name) LIKE LOWER('%${this.searchQuery}%')
             ORDER BY  od.bookmaker_id ASC, od.market_parameters ASC, od.timestamp ${this.sortOrder}
         ) oddstable
     GROUP BY oddstable.name

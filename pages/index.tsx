@@ -5,8 +5,12 @@ import Searchbar from "@/components/searchbar/Searchbar";
 import Pagination from "@/components/pagination/Pagination";
 import FixturesTable from "@/components/fixturesTable/FixturesTable";
 import Filter from "@/components/filter/Filter";
+import { useMediaQuery } from "react-responsive";
 
 export default function Fixtures() {
+  const isShortScreen = useMediaQuery({
+    query: "(max-height: 1024px)",
+  });
   const {
     data,
     error,
@@ -16,11 +20,12 @@ export default function Fixtures() {
     handleCompetitionOptionsChange,
     regionOptions,
     handleRegionOptionsChange,
+    handleSearchQueryChange,
     limit,
     offset,
     setOffset,
     setLimit,
-  } = useFixturesApi();
+  } = useFixturesApi(undefined, isShortScreen ? 5 : 10);
 
   return (
     <Layout>
@@ -29,7 +34,12 @@ export default function Fixtures() {
         <div className="mx-auto max-w-7xl pt-4 w-full h-full bg-white z-50">
           <div className="flex flex-col sm:flex-row min-w-full sm:gap-x-2 gap-y-2 sm:gap-y-0 mb-4">
             <div className="w-full sm:w-2/3">
-              <Searchbar placeholder="Search by Fixture..." />
+              <Searchbar
+                placeholder="Search by Fixture..."
+                changeHandler={(e) =>
+                  handleSearchQueryChange(e.target.value.toLowerCase())
+                }
+              />
             </div>
             <div className="w-full sm:w-1/3">
               <Filter

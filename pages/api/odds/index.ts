@@ -10,19 +10,20 @@ export default async function handler(
   if (req.method !== "GET")
     res.status(405).json({ message: "Method not allowed" });
 
-  const { fixture_id, timestamp, sortOrder } = req.query;
+  const { fixture_id, timestamp, sortOrder, searchQuery } = req.query;
 
   try {
-    /*const session = await getServerSession(req, res, authOptions);
+    const session = await getServerSession(req, res, authOptions);
     if (!session) {
       res.status(401).json({ message: "Unauthorized" });
       return;
-    }*/
+    }
     const odds = new Odd(
       parseInt(fixture_id as string),
       undefined,
       timestamp as string,
-      sortOrder as "asc" | "desc"
+      sortOrder as "asc" | "desc",
+      searchQuery ? (searchQuery as string) : ""
     );
 
     const results = await odds.getAllOddsByTimestamp();

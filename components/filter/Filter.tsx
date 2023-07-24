@@ -10,7 +10,7 @@ export type FilterType = {
   label: string;
   value?: string[] | string;
   values?: FilterOption[];
-  setter: (values: FilterOption[]) => void | ((value: string) => void);
+  setter: (value: string | FilterOption[]) => void;
 };
 
 export default function Filter(props: { filters: FilterType[] }) {
@@ -181,6 +181,16 @@ export default function Filter(props: { filters: FilterType[] }) {
                           );
                         })}
                       </ul>
+                    )}
+                    {filter.type === "datetime" && (
+                      <input
+                        type="datetime-local"
+                        value={filter.value}
+                        onChange={(event) => {
+                          console.log(event.target.value);
+                          filter.setter(event.target.value);
+                        }}
+                      />
                     )}
                   </div>
                 </React.Fragment>

@@ -52,18 +52,18 @@ export default function FixturesTable(props: { fixtureSets: FixtureSet[] }) {
                     }
                   >
                     {
-                      <td className="px-6 py-4">{`${dateToHHMM(
+                      <td className="px-4 sm:px-6 py-4">{`${dateToHHMM(
                         fixture.start_time
                       )} `}</td>
                     }
 
-                    <td className="px-6 py-4 font-medium text-gray-900 hidden sm:table-cell">
+                    <td className="px-4 sm:px-6 py-4 font-medium text-gray-900 hidden sm:table-cell">
                       {fixture.country_name}
                     </td>
-                    <td className="px-6 py-4 hidden sm:table-cell">
+                    <td className="px-4 sm:px-6py-4 hidden sm:table-cell">
                       {fixture.competition}
                     </td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                    <td className="px-4 sm:px-6 py-4 font-medium text-gray-900">
                       {fixture.home} vs {fixture.away}
                     </td>
                   </tr>

@@ -4,11 +4,13 @@ import { Fixture } from ".prisma/client";
 import getFixtureSets from "../utils/getFixtureSets";
 import api from "../utils/api";
 import { FilterOption } from "@/components/filter/Filter";
-import { lutimes } from "fs";
 
-const useFixtureApi = (initialSearchQuery: string = "") => {
+const useFixtureApi = (
+  initialSearchQuery: string = "",
+  initialLimit: number = 10
+) => {
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(initialLimit);
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
   const [competitionOptions, setCompetitionOptions] = useState<FilterOption[]>([
     { label: "UEFA Europa Conference League", selected: false },

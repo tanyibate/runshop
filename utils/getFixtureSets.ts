@@ -1,20 +1,15 @@
 import { Fixture } from ".prisma/client";
 import { FixtureSet } from "@/components/fixturesTable/FixturesTable";
+import dateToLocaleString from "./dateToLocaleString";
 
 // Function to turn an array of fixtures into an array of FixtureSets
 const getFixtureSets = (fixtures: Fixture[]): FixtureSet[] => {
   const fixtureSets: FixtureSet[] = [];
 
   fixtures.forEach((fixture) => {
-    const fixtureDate = new Date(fixture.start_time);
-
-    const formattedDate = fixtureDate.toLocaleDateString("en-GB", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
+    const formattedDate = dateToLocaleString(
+      fixture.start_time as unknown as string
+    );
     // Check if the fixtureSet already exists
     const fixtureSetIndex = fixtureSets.findIndex(
       (fixtureSet) => fixtureSet.date === formattedDate
