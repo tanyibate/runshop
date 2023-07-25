@@ -13,14 +13,12 @@ export default function Modal(props: {
   fixture_id: number;
 }) {
   const { active, deactivate, bookmaker_id, fixture_id } = props;
-  const [chartData, setChartData] = useState<ChartDataWithParameter[]>([]);
   const [filter, setFilter] = useState<number | string>(-1);
   const [title, setTitle] = useState<string>("Win Draw Loss");
 
-  const { isLoading, isError, error } = useBookmakerApi(
+  const { isLoading, isError, error, chartData } = useBookmakerApi(
     fixture_id,
-    bookmaker_id,
-    setChartData
+    bookmaker_id
   );
 
   return (
@@ -38,7 +36,7 @@ export default function Modal(props: {
             <div className="w-1/3 min-w-[240px]">
               {
                 // If chart data has any keys which are not empty arrays, then render the filter
-                chartData.length > 0 && (
+                chartData && chartData.length > 0 && (
                   <Filter
                     options={{
                       values: [
@@ -90,7 +88,7 @@ export default function Modal(props: {
                 </div>
               </div>
             )}
-            {chartData.length > 0 && (
+            {chartData && chartData.length > 0 && (
               <Graph data={returnChartData(chartData, filter as number)} />
             )}
           </div>

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 const Graph = ({ data }) => {
-  if (!data) return <div>No chart data provided</div>;
+  if (!data.length) return <div>No chart data provided</div>;
   // Array of keys to be used for the graph
   const keys = Object.keys(data[0]).filter((key) => key !== "timestamp");
 

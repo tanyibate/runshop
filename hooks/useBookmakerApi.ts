@@ -4,12 +4,13 @@ import api from "../utils/api";
 import generateGraphData from "@/utils/generateGraphData";
 import { ChartDataWithParameter } from "@/utils/types";
 
-const useBookmakerApi = (
-  fixture_id: number,
-  bookmaker_id: number,
-  setChartData: (value: ChartDataWithParameter[]) => void
-) => {
-  const { isLoading, isError, error } = useQuery<Odd[]>(
+const useBookmakerApi = (fixture_id: number, bookmaker_id: number) => {
+  const {
+    isLoading,
+    isError,
+    error,
+    data: chartData,
+  } = useQuery<ChartDataWithParameter[]>(
     ["odds", fixture_id, bookmaker_id],
     () =>
       api
@@ -18,22 +19,13 @@ const useBookmakerApi = (
             fixture_id: fixture_id,
           },
         })
-        .then((res) => res.data),
-    {
-      onSuccess: (data) => {
-        // Map market parameter null as -1
-        data = data.map((odd) => {
-          if (odd.market_parameters === null) {
-            odd.market_parameters = -1;
-          }
-          return odd;
-        });
-        generateGraphData(data, setChartData);
-      },
-    }
+        .then((res) => {
+          return generateGraphData(res.data);
+        })
   );
 
   return {
+    chartData,
     isLoading,
     isError,
     error,

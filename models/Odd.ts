@@ -58,9 +58,14 @@ export default class Odd {
           isEmpty: false,
         },
       },
-      orderBy: {
-        timestamp: "asc",
-      },
+      orderBy: [
+        {
+          timestamp: "asc",
+        },
+        {
+          market_parameters: "asc",
+        },
+      ],
     });
   }
 }
