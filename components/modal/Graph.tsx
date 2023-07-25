@@ -1,3 +1,4 @@
+import { get } from "http";
 import {
   LineChart,
   Line,
@@ -13,6 +14,14 @@ const Graph = ({ data }) => {
   if (!data.length) return <div>No chart data provided</div>;
   // Array of keys to be used for the graph
   const keys = Object.keys(data[0]).filter((key) => key !== "timestamp");
+
+  function getDarkColor() {
+    var color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += Math.floor(Math.random() * 10);
+    }
+    return color;
+  }
 
   return (
     <ResponsiveContainer width="100%" height={500}>
@@ -33,13 +42,13 @@ const Graph = ({ data }) => {
         <Tooltip />
         <Legend />
         {keys.map((key, index) => {
-          const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+          const randomColor = getDarkColor();
           return (
             <Line
               key={key + index}
               type="monotone"
               dataKey={key}
-              stroke={`#${randomColor}`}
+              stroke={randomColor}
               activeDot={index === 0 ? { r: 8 } : undefined}
             />
           );
