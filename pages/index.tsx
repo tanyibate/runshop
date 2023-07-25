@@ -11,7 +11,7 @@ import Filter from "@/components/filter/Filter";
 import FixturesClass from "@/models/Fixtures";
 import { FixtureSetsWithCount } from "@/utils/types";
 import getFixtureSets from "@/utils/getFixtureSets";
-import { use, useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Fixtures({
   initialData,
