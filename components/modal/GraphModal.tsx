@@ -3,7 +3,7 @@ import Filter from "../filter/Filter";
 import Graph from "./Graph";
 import useBookmakerApi from "@/hooks/useBookmakerApi";
 import { CloseButton } from "./CloseButton";
-import { ChartData } from "@/utils/types";
+import { ChartData, ChartDataWithParameter } from "@/utils/types";
 import returnChartData from "@/utils/returnChartData";
 
 export default function Modal(props: {
@@ -13,13 +13,9 @@ export default function Modal(props: {
   fixture_id: number;
 }) {
   const { active, deactivate, bookmaker_id, fixture_id } = props;
-  const [filter, setFilter] = useState("Win Draw Loss");
-  const [chartData, setChartData] = useState<ChartData>({
-    overUnder0Point5Data: [],
-    overUnder1Point5Data: [],
-    overUnder2Point5Data: [],
-    winLossDrawData: [],
-  });
+  const [chartData, setChartData] = useState<ChartDataWithParameter[]>([]);
+  const [filter, setFilter] = useState<number | string>(-1);
+  const [title, setTitle] = useState<string>("Win Draw Loss");
 
   const { isLoading, isError, error } = useBookmakerApi(
     fixture_id,
@@ -42,29 +38,36 @@ export default function Modal(props: {
             <div className="w-1/3 min-w-[240px]">
               {
                 // If chart data has any keys which are not empty arrays, then render the filter
-                Object.keys(chartData).some(
-                  (key) => chartData[key].length > 0
-                ) && (
+                chartData.length > 0 && (
                   <Filter
                     options={{
                       values: [
-                        chartData.winLossDrawData.length > 0
-                          ? "Win Draw Loss"
+                        chartData.some((data) => data.parameter === -1)
+                          ? {
+                              label: "Win Draw Loss",
+                              value: -1,
+                            }
                           : undefined,
-                        chartData.overUnder0Point5Data.length > 0
-                          ? "Over Under 0.5 Goals"
-                          : undefined,
-                        chartData.overUnder1Point5Data.length > 0
-                          ? "Over Under 1.5 Goals"
-                          : undefined,
-                        chartData.overUnder2Point5Data.length > 0
-                          ? "Over Under 2.5 Goals"
-                          : undefined,
+                        ...chartData.map((data) => {
+                          if (data.parameter !== -1) {
+                            return {
+                              label: `Over and Under ${data.parameter} Goals`,
+                              value: data.parameter,
+                            };
+                          }
+                        }),
                       ],
 
-                      setter: (value) => setFilter(value),
+                      setter: (value) => {
+                        setFilter(value);
+                        setTitle(
+                          value === -1
+                            ? "Win Draw Loss"
+                            : `Over and Under ${value} Goals`
+                        );
+                      },
                     }}
-                    title={filter}
+                    title={title}
                   />
                 )
               }
@@ -87,12 +90,9 @@ export default function Modal(props: {
                 </div>
               </div>
             )}
-            {
-              // If chart data has any keys which are not empty arrays, then render the graph
-              Object.keys(chartData).some(
-                (key) => chartData[key].length > 0
-              ) && <Graph data={returnChartData(chartData, filter)} />
-            }
+            {chartData.length > 0 && (
+              <Graph data={returnChartData(chartData, filter as number)} />
+            )}
           </div>
         </div>
       </div>

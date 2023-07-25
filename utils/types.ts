@@ -20,6 +20,11 @@ export type ChartData = {
   winLossDrawData: WinLossDrawChartData[];
 };
 
+export type ChartDataWithParameter = {
+  parameter: number;
+  data: (OverUnderChartData | WinLossDrawChartData)[];
+};
+
 export type BookmakerWithOdds = {
   name: string;
   odds: Odd[];

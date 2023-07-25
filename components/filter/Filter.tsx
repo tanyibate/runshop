@@ -14,8 +14,11 @@ export type FilterType = {
 };
 
 export type Options = {
-  values: string[];
-  setter: (value: string) => void;
+  values: {
+    label: string;
+    value: string | number;
+  }[];
+  setter: (value: string | number) => void;
 };
 
 export default function Filter(props: {
@@ -95,9 +98,9 @@ export default function Filter(props: {
                 return (
                   value && (
                     <li
-                      key={value + "Option"}
+                      key={value.label + "Option"}
                       onClick={() => {
-                        options.setter(value);
+                        options.setter(value.value);
                         setDropdown(false);
                       }}
                     >
@@ -105,7 +108,7 @@ export default function Filter(props: {
                         href="#"
                         className="block px-4 py-2 hover:bg-gray-100 "
                       >
-                        {value}
+                        {value.label}
                       </a>
                     </li>
                   )
