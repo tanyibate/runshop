@@ -47,3 +47,11 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. To access protected routes sign in with the credentials admin@runshop.com and the password being just password for simplicity. You can also sign in using your Google Account but this may be limited due google credentials being a setup for an unpublished project. If google sign in does not work you may have to generate your own client id and client secret.
+
+### Common Issues
+
+These are the issues I've discovered my self but are unable to be fixed due to me using a third party library to render data
+
+#### Graphs
+
+The graphs may not display properly due their dynamic nature, please just select another filter for the data such as Over and Under 1.5 Goals, Over and Under 2.5 Goals etc and then return the original fixture and the chart/ graph will be loaded correctly.
