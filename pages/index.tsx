@@ -10,15 +10,16 @@ import FixturesTable from "@/components/fixturesTable/FixturesTable";
 import Filter from "@/components/filter/Filter";
 import FixturesClass from "@/models/Fixtures";
 import { FixtureSetsWithCount } from "@/utils/types";
-import { get } from "http";
 import getFixtureSets from "@/utils/getFixtureSets";
+import { use, useEffect, useState } from "react";
 
 export default function Fixtures({
   initialData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const isShortScreen = useMediaQuery({
-    query: "(max-height: 1024px)",
-  });
+  useEffect(() => {
+    if (window.innerHeight < 1024) setLimit(5);
+  }, []);
+
   const {
     data,
     error,
@@ -33,7 +34,7 @@ export default function Fixtures({
     offset,
     setOffset,
     setLimit,
-  } = useFixturesApi(undefined, isShortScreen ? 5 : 10, initialData);
+  } = useFixturesApi(undefined, undefined, initialData);
 
   return (
     <Layout>
