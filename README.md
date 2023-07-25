@@ -28,13 +28,13 @@ You'll now have to migrate your database to ensure the correct it has the correc
 npx prisma migrate dev
 ```
 
-The application is powered using Prisma ORM to be able to use Prisma the boiler plate needs to be generated
+The application is powered using Prisma ORM to be able to use Prisma the boiler plate needs to be generated.
 
 ```
 npx prisma generate
 ```
 
-Now to finish the setup well need to seed the database using the provided json files
+Now to finish the setup we'll need to seed the database using the provided json files.
 
 ```
 npx prisma db seed
