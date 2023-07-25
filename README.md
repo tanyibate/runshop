@@ -54,4 +54,4 @@ These are the issues I've discovered my self but are unable to be fixed due to m
 
 #### Graphs
 
-The graphs may not display properly due their dynamic nature, please just select another filter for the data such as Over and Under 1.5 Goals, Over and Under 2.5 Goals etc and then return the original fixture and the chart/ graph will be loaded correctly.
+The graphs may not occasionally display properly due their dynamic nature, please just select another filter for the data such as Over and Under 1.5 Goals, Over and Under 2.5 Goals etc and then chose the orginal filter and then chart/ graph will be loaded correctly.
