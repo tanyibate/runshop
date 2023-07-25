@@ -131,16 +131,22 @@ export const getServerSideProps: GetServerSideProps<{
   const session = await getServerSession(context.req, context.res, authOptions);
   let bookmakersWithOdds: BookmakerWithOdds[] = [];
   const { fixture_id } = context.params;
-  const fixture = await prisma.fixture.findUnique({
-    where: {
-      fixture_id: Number(fixture_id),
-    },
-  });
-  const home = fixture.home;
-  const away = fixture.away;
-  if (session) {
-    const odds = new Odd(Number(fixture_id));
-    bookmakersWithOdds = await odds.getAllOddsByTimestamp();
+  let home: string = "Home",
+    away: string = "Away";
+  try {
+    const fixture = await prisma.fixture.findUnique({
+      where: {
+        fixture_id: Number(fixture_id),
+      },
+    });
+    home = fixture.home;
+    away = fixture.away;
+    if (session) {
+      const odds = new Odd(Number(fixture_id));
+      bookmakersWithOdds = await odds.getAllOddsByTimestamp();
+    }
+  } catch (err) {
+    console.log(err);
   }
 
   return {

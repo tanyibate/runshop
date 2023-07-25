@@ -113,13 +113,19 @@ export const getServerSideProps: GetServerSideProps<{
     fixtureSets: [],
     totalFixtures: 0,
   };
-  const fixtures = new FixturesClass(10, 0);
-  const allFixtures = await fixtures.getFixtures();
-  const fixtureCount = await fixtures.getFixturesCount();
-  initialData = {
-    fixtureSets: getFixtureSets(allFixtures),
-    totalFixtures: fixtureCount,
-  };
+
+  try {
+    const fixtures = new FixturesClass(10, 0);
+    const allFixtures = await fixtures.getFixtures();
+    const fixtureCount = await fixtures.getFixturesCount();
+    initialData = {
+      fixtureSets: getFixtureSets(allFixtures),
+      totalFixtures: fixtureCount,
+    };
+  } catch (err) {
+    console.log(err);
+  }
+
   initialData = JSON.parse(safeJsonStringify(initialData));
   return {
     props: {
