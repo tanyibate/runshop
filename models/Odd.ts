@@ -59,7 +59,7 @@ export default class Odd {
         },
       },
       orderBy: {
-        timestamp: this.sortOrder,
+        timestamp: "asc",
       },
     });
   }

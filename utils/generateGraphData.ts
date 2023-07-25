@@ -1,5 +1,6 @@
 import { Odd } from ".prisma/client";
 import { OverUnderChartData, WinLossDrawChartData } from "./types";
+import dateToLocaleString from "./dateToLocaleString";
 
 const generateGraphData = (
   data: Odd[],
@@ -35,7 +36,7 @@ const generateGraphData = (
 
   overAndUnderOdds0Point5.forEach((odd) => {
     overUnder0Point5Data.push({
-      timestamp: odd.timestamp as unknown as string,
+      timestamp: dateToLocaleString(odd.timestamp as unknown as string, true),
       over: odd.prices[0],
       under: odd.prices[1],
     });
@@ -43,7 +44,7 @@ const generateGraphData = (
 
   overAndUnderOdds1Point5.forEach((odd) => {
     overUnder1Point5Data.push({
-      timestamp: odd.timestamp as unknown as string,
+      timestamp: dateToLocaleString(odd.timestamp as unknown as string, true),
       over: odd.prices[0],
       under: odd.prices[1],
     });
@@ -51,7 +52,7 @@ const generateGraphData = (
 
   overAndUnderOdds2Point5.forEach((odd) => {
     overUnder2Point5Data.push({
-      timestamp: odd.timestamp as unknown as string,
+      timestamp: dateToLocaleString(odd.timestamp as unknown as string, true),
       over: odd.prices[0],
       under: odd.prices[1],
     });
@@ -59,28 +60,11 @@ const generateGraphData = (
 
   winDrawLossOdds.forEach((odd) => {
     winLossDrawData.push({
-      timestamp: odd.timestamp as unknown as string,
+      timestamp: dateToLocaleString(odd.timestamp as unknown as string, true),
       win: odd.prices[0],
       draw: odd.prices[1],
       loss: odd.prices[2],
     });
-  });
-
-  // Now sort the data by timestamp ascending
-  overUnder0Point5Data.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-  });
-
-  overUnder1Point5Data.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-  });
-
-  overUnder2Point5Data.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-  });
-
-  winLossDrawData.sort((a, b) => {
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
   });
 
   setChartData({
