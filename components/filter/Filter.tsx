@@ -231,7 +231,6 @@ export default function Filter(props: {
                           type="datetime-local"
                           value={filter.value}
                           onChange={(event) => {
-                            console.log(event.target.value);
                             filter.setter(event.target.value);
                           }}
                         />
